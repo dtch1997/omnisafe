@@ -181,11 +181,19 @@ class OffPolicyAdapter(OnlineAdapter):
             logger (Logger): Logger, to log ``EpRet``, ``EpCost``, ``EpLen``.
             idx (int): The index of the environment.
         """
+        safety_violation = (self._ep_cost[idx] > 0).to(float)
+        total_safety_violations = logger.get_stats('Metrics/CumulativeSafetyViolations')[0]
+        import math 
+        if math.isnan(total_safety_violations):
+            total_safety_violations = 0
+        print("safety_violation: ", safety_violation)
+        print("total_safety_violations: ", total_safety_violations)
         logger.store(
             {
                 'Metrics/EpRet': self._ep_ret[idx],
                 'Metrics/EpCost': self._ep_cost[idx],
                 'Metrics/EpLen': self._ep_len[idx],
+                'Metrics/CumulativeSafetyViolations': total_safety_violations + safety_violation,
             },
         )
 
