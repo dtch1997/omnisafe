@@ -19,6 +19,60 @@ import argparse
 import omnisafe
 from omnisafe.utils.tools import custom_cfgs_to_dict, update_dict
 
+import wandb
+import time
+
+def init_wandb(args) -> "wandb.Run":
+
+    run_name = f"{args.env_id}__{args.algo}__{int(time.time())}"
+    return wandb.init(
+        name=run_name,
+        project=args.wandb_project_name,
+        entity=args.wandb_entity,
+        group=args.wandb_group,
+        tags=args.wandb_tags,
+        config=args,
+        sync_tensorboard=True        
+    )
+
+def add_wandb_args(parser: argparse.ArgumentParser):
+    parser.add_argument(
+        "--track",
+        action="store_true",
+        default=False,
+        help="if toggled, this experiment will be tracked with Weights and Biases",
+    )
+    parser.add_argument(
+        "--wandb-project-name", type=str, default="svf_gymnasium", help="the wandb's project name"
+    )
+    parser.add_argument(
+        "--wandb-entity",
+        type=str,
+        default='dtch1997',
+        help="the entity (team) of wandb's project",
+    )
+    parser.add_argument(
+        "--wandb-group",
+        type=str,
+        default="default",
+        help="the wandb's group name for the current run",
+    )
+    parser.add_argument(
+        "-P",
+        "--progress",
+        action="store_true",
+        default=False,
+        help="if toggled, display a progress bar using tqdm and rich",
+    )
+    parser.add_argument(
+        "-tags",
+        "--wandb-tags",
+        type=str,
+        default=[],
+        nargs="+",
+        help="Tags for wandb run, e.g.: -tags optimized pr-123",
+    )
+    return parser
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -73,6 +127,12 @@ if __name__ == '__main__':
         help='number of threads to use for torch',
     )
     args, unparsed_args = parser.parse_known_args()
+    
+    parser = add_wandb_args(parser)
+    wandb_args, unparsed_args = parser.parse_known_args(unparsed_args)
+    if wandb_args.track: 
+        init_wandb(wandb_args)
+
     keys = [k[2:] for k in unparsed_args[0::2]]
     values = list(unparsed_args[1::2])
     unparsed_args = dict(zip(keys, values))
