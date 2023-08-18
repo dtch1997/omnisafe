@@ -22,16 +22,14 @@ from omnisafe.utils.tools import custom_cfgs_to_dict, update_dict
 import wandb
 import time
 
-def init_wandb(args) -> "wandb.Run":
-
-    run_name = f"{args.env_id}__{args.algo}__{int(time.time())}"
+def init_wandb(args, config, run_name) -> "wandb.Run":
     return wandb.init(
         name=run_name,
         project=args.wandb_project_name,
         entity=args.wandb_entity,
         group=args.wandb_group,
         tags=args.wandb_tags,
-        config=args,
+        config=config,
         sync_tensorboard=True        
     )
 
@@ -131,7 +129,8 @@ if __name__ == '__main__':
     parser = add_wandb_args(parser)
     wandb_args, unparsed_args = parser.parse_known_args(unparsed_args)
     if wandb_args.track: 
-        init_wandb(wandb_args)
+        run_name = f"{args.env_id}__{args.algo}__{int(time.time())}"
+        init_wandb(wandb_args, args, run_name)
 
     keys = [k[2:] for k in unparsed_args[0::2]]
     values = list(unparsed_args[1::2])
