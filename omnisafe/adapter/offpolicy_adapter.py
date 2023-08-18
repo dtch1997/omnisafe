@@ -186,8 +186,6 @@ class OffPolicyAdapter(OnlineAdapter):
         import math 
         if math.isnan(total_safety_violations):
             total_safety_violations = 0
-        print("safety_violation: ", safety_violation)
-        print("total_safety_violations: ", total_safety_violations)
         logger.store(
             {
                 'Metrics/EpRet': self._ep_ret[idx],
