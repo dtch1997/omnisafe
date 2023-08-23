@@ -15,7 +15,7 @@ do
                 do
                     env_id="Safety${robot}${task}${level}-v0"
                     python examples/train_policy.py \
-                        --env-id $env \
+                        --env-id $env_id \
                         --algo $algo \
                         --track \
                         --total-steps 1000000 \
