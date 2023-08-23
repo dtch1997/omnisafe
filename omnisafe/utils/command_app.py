@@ -17,6 +17,7 @@
 
 import os
 import warnings
+import wandb
 from typing import Any, Dict, List
 
 import numpy as np
@@ -115,6 +116,10 @@ def train(  # pylint: disable=too-many-arguments
             training. Defaults to False.
         custom_cfgs (list of str, optional): Custom configuration for training. Defaults to ``[]``.
     """
+    wandb.init(
+        sync_tensorboard=True,
+    )
+
     args = {
         'algo': algo,
         'env_id': env_id,
