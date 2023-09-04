@@ -9,7 +9,11 @@ for seed in 1 2 3
 do
     for env_id in Hopper-v4 Walker2d-v4 Ant-v4
     do
-            WANDB_NAME=CPO-$env_id-seed=$seed omnisafe train \
+            WANDB_RUN_GROUP=$WANDB_RUN_GROUP \
+            WANDB_NAME=CPO-$env_id-seed=$seed \
+            WANDB_PROJECT=$WANDB_PROJECT \
+            WANDB_ENTITY=$WANDB_ENTITY \
+            omnisafe train \
             --env-id $env_id \
             --algo CPO \
             --custom-cfgs seed --custom-cfgs $seed \
@@ -23,7 +27,11 @@ for seed in 1 2 3
 do
     for env_id in Hopper-v4 Walker2d-v4 Ant-v4
     do
-            WANDB_NAME=PPOLag-$env_id-seed=$seed omnisafe train \
+            WANDB_RUN_GROUP=$WANDB_RUN_GROUP \
+            WANDB_NAME=PPOLag-$env_id-seed=$seed omnisafe train
+            WANDB_PROJECT=$WANDB_PROJECT \
+            WANDB_ENTITY=$WANDB_ENTITY \
+            omnisafe train \
             --env-id $env_id \
             --algo PPOLag \
             --custom-cfgs seed --custom-cfgs $seed \
