@@ -116,9 +116,6 @@ def train(  # pylint: disable=too-many-arguments
             training. Defaults to False.
         custom_cfgs (list of str, optional): Custom configuration for training. Defaults to ``[]``.
     """
-    wandb.init(
-        sync_tensorboard=True,
-    )
 
     args = {
         'algo': algo,
@@ -134,6 +131,13 @@ def train(  # pylint: disable=too-many-arguments
     assert_with_exit(len(keys) == len(values), 'keys and values should be in pairs')
     custom_cfgs_dict = dict(zip(keys, values))
     custom_cfgs_dict.update({'logger_cfgs:log_dir': os.path.join(log_dir, 'train')})
+
+    config = args.copy()
+    config.update(custom_cfgs_dict)
+    wandb.init(
+        sync_tensorboard=True,
+        config = config,
+    )
 
     parsed_custom_cfgs: Dict[str, Any] = {}
     for k, v in custom_cfgs_dict.items():
